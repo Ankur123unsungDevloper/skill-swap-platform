@@ -237,7 +237,6 @@ const userSchema = new Schema(
       type: String,
       required: true,
       trim: true,
-      index: true,
     },
     email: {
       type: String,
@@ -250,17 +249,16 @@ const userSchema = new Schema(
       type: String,
       required: true,
       enum: COUNTRIES,
+      index: true,
     },
-    skillsOffered: [
-      {
-        type: String,
-      },
-    ],
-    skillsWanted: [
-      {
-        type: String,
-      },
-    ],
+    skillsOffered: {
+      type: [String],
+      index: true,
+    },
+    skillsWanted: {
+      type: [String],
+      index: true,
+    },
     availability: {
       type: String,
       enum: Object.values(WEEKDAY_AVAILABILITY),
@@ -274,6 +272,7 @@ const userSchema = new Schema(
       required: true,
       enum: Object.values(USER_SKILL_LEVEL),
       trim: true,
+      index: true,
     },
     password: {
       type: String,
@@ -281,7 +280,7 @@ const userSchema = new Schema(
     },
     refreshToken: {
       type: String,
-  },
+    },
   },
   { timestamps: true }
 );
@@ -294,8 +293,8 @@ const userSchema = new Schema(
 // });
 
 userSchema.methods.isPasswordCorrect = async function (password) {
-//   return await bcrypt.compare(password, this.password);
-return password === this.password;
+  //   return await bcrypt.compare(password, this.password);
+  return password === this.password;
 };
 
 userSchema.methods.generateAccessToken = function () {
