@@ -12,6 +12,7 @@
   "dependencies": {
     "@clerk/clerk-react": "^5.33.0",
     "@tailwindcss/vite": "^4.1.11",
+    "axios": "^1.10.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.525.0",
@@ -32,6 +33,7 @@
     "globals": "^16.3.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.11",
+    "typescript": "^5.8.3",
     "vite": "^7.0.4"
   }
 }

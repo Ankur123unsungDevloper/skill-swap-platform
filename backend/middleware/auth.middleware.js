@@ -1,28 +1,64 @@
-import { ApiError } from "../utils/ApiError.js";
-import { asynchandler } from "../utils/asynchandler.js";
-import jwt from "jsonwebtoken";
+import { clerkClient, getAuth } from "@clerk/clerk-sdk-node";
 import { User } from "../models/user.model.js";
+import { ApiError } from "../utils/ApiError.js";
+import jwt from "jsonwebtoken";
 
-export const verifyJWT = asynchandler(async (req, _, next) => {
+// Helper function
+const generateAccessAndRefreshTokens = async (userId) => {
+  const user = await User.findById(userId);
+  const accessToken = user.generateAccessToken();
+  const refreshToken = user.generateRefreshToken();
+  user.refreshToken = refreshToken;
+  await user.save({ validateBeforeSave: false });
+  return { accessToken, refreshToken };
+};
+
+export const requireAuth = async (req, res, next) => {
   try {
-    const token =
-      req.cookies?.accessToken ||
-      req.header("Authorization")?.replace("Bearer ", "");
-    if (!token) {
-      throw new ApiError(401, "Unauthorized request");
-    }
-    const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-  
-    const user = await User.findById(decodedToken?._id).select(
-      "-password -refreshToken"
-    );
-  
+    const { userId } = getAuth(req);
+    if (!userId) throw new ApiError(401, "Unauthorized - Clerk user not found");
+
+    const clerkUser = await clerkClient.users.getUser(userId);
+    if (!clerkUser) throw new ApiError(401, "Clerk user data not found");
+
+    // Check if user already exists in your DB
+    let user = await User.findOne({ email: clerkUser.emailAddresses[0].emailAddress });
+
+    // If not, create a new one
     if (!user) {
-      throw new ApiError(401, "Invalid Access Token");
+      user = await User.create({
+        username: clerkUser.username || clerkUser.id,
+        name: `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim(),
+        email: clerkUser.emailAddresses[0].emailAddress,
+        password: process.env.DEFAULT_CLERK_USER_PASSWORD || "clerk_auth", // can be random
+        profileVisibility: true,
+        skillsOffered: [],
+        skillsWanted: [],
+        location: '',
+        level: 'Beginner',
+      });
     }
+
+    // Generate custom JWTs
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
+
+    // Attach user to request
     req.user = user;
+
+    // Optionally send tokens if you're using this middleware for login
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+    });
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    // ✅ Continue
     next();
   } catch (error) {
-    throw new ApiError(401, error?.message || "Invalid access token")
+    console.error("Clerk Auth Error:", error);
+    next(new ApiError(401, error.message || "Clerk authentication failed"));
   }
-});
+};

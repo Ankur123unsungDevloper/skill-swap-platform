@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import useScrollTop from '../../hooks/useScrollTop';
 import { cn } from '../../lib/utils';
 
-const Navbar = () => {
-  const scrolled = useScrollTop();
+const Navbar: React.FC = () => {
+  const scrolled: boolean = useScrollTop();
 
   return (
     <nav

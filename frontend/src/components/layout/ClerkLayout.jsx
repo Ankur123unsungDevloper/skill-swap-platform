@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const ClerkLayout = ({ children }) => {
   return (
@@ -19,14 +20,10 @@ const ClerkLayout = ({ children }) => {
       </div>
 
       {/* Right Side (Logo / Image) */}
-      <div className="h-full bg-gray-600 hidden lg:flex items-center justify-center">
-        {/* <img
-          src={logo}
-          alt="logo"
-          width={400}
-          height={400}
-          className="object-contain"
-        /> */}
+      <div className="h-full bg-gradient-to-b from-white to-blue-50 hidden lg:flex items-center justify-center">
+        <Link to="/" className="text-6xl font-bold text-violet-600">
+          <span className="text-blue-600">Skill</span>Swap
+        </Link>
       </div>
     </div>
   );

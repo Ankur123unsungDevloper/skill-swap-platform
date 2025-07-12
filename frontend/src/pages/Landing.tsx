@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 
-const Landing = () => {
+const Landing: React.FC = () => {
   return (
     <div className="text-gray-800">
       <Navbar />
