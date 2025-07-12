@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
-const ClerkLayout = ({ children }) => {
+interface ClerkLayoutProps {
+  children: ReactNode;
+}
+
+const ClerkLayout: React.FC<ClerkLayoutProps> = ({ children }) => {
   return (
-    <div
-      className="min-h-screen grid grid-cols-1 lg:grid-cols-2"
-    >
+    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
       {/* Left Side */}
       <div className="h-full lg:flex flex-col items-center justify-center px-4">
         <div className="text-center space-y-4 pt-16">
