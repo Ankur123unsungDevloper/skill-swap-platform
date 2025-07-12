@@ -14,11 +14,19 @@ app.use(cors({
 
 app.use(express.json());
 app.use(cookieParser());
-import userRoute from './routes/user.routes.js'
+import userRoute from './routes/user.routes.js';
+import swapRoute from './routes/swap.routes.js';
+import ratingRoutes from './routes/rating.routes.js';
 
 // Routes Declaration
 
 //user routes
 app.use('/api/v1/user', userRoute);
+
+// Swap routes
+app.use('/api/v1/swap', swapRoute);
+
+// Rating routes
+app.use('/api/v1/ratings', ratingRoutes);
 
 export {app}
