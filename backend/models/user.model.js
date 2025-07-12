@@ -281,6 +281,18 @@ const userSchema = new Schema(
     refreshToken: {
       type: String,
     },
+    averageRating: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 5,
+    },
+    totalRatings: {
+      // Total number of ratings received
+      type: Number,
+      default: 0,
+      min: 0,
+    },
   },
   { timestamps: true }
 );
