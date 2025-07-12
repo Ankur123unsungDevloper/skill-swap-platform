@@ -16,10 +16,6 @@ body {
   @apply bg-white text-gray-800 font-sans antialiased;
 }
 
-/* Optional default anchor styles */
-a {
-  @apply text-blue-600 hover:underline;
-}
 
 /* Optional default heading */
 h1 {
