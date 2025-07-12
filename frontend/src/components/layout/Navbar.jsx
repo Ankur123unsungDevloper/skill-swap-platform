@@ -22,13 +22,13 @@ const Navbar = () => {
         {/* Right side buttons */}
         <div className="space-x-4">
           <Link
-            to="/login"
+            to="/sign-in"
             className="text-sm font-medium text-gray-600 hover:text-blue-600 transition"
           >
             Login
           </Link>
           <Link
-            to="/signup"
+            to="/sign-up"
             className="text-sm font-medium text-white bg-blue-600 px-4 py-2 rounded-md hover:bg-blue-700 transition"
           >
             Get Started

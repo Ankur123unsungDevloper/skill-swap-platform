@@ -3,26 +3,33 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 
 // Pages
 import Landing from './pages/Landing';
-// import Login from './pages/Login';
-// import Signup from './pages/Signup';
-// import Home from './pages/Home';
-// import Dashboard from './pages/Dashboard';
+import SignInPage from './routes/sign-in';
+import SignUpPage from './routes/sign-up';
+import Dashboard from './pages/Dashboard';
+
+// Clerk wrapper
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
     <Routes>
-      {/* Public Landing Page */}
+      {/* Public Pages */}
       <Route path="/" element={<Landing />} />
+      <Route path="/sign-in" element={ <SignInPage /> } />
+      <Route path="/sign-up" element={<SignUpPage />} />
 
-      {/* Auth Pages */}
-      {/* <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} /> */}
+      {/* Protected Routes */}
+      
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
 
-      {/* Protected Pages (for later) */}
-      {/* <Route path="/home" element={<Home />} />
-      <Route path="/dashboard" element={<Dashboard />} /> */}
-
-      {/* Fallback Route */}
+      {/* Fallback */}
       {/* <Route path="*" element={<Navigate to="/" />} /> */}
     </Routes>
   );
