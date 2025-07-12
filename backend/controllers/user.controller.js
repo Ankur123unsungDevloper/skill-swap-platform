@@ -157,4 +157,123 @@ const logoutUser = asynchandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "User logged out"));
 });
 
-export { registerUser, loginUser, logoutUser };
+const updateUserDetails = asynchandler(async (req, res) => {
+  const {
+    username,
+    name,
+    email,
+    location,
+    skillsOffered,
+    skillsWanted,
+    availability,
+    profileVisibility,
+    level,
+  } = req.body;
+
+  if (
+    !email ||
+    !username ||
+    !name ||
+    !location ||
+    !skillsOffered ||
+    !skillsWanted ||
+    !availability ||
+    !level
+  ) {
+    throw new ApiError(400, "All fields are required");
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $set: {
+        username,
+        name,
+        email,
+        location,
+        skillsOffered,
+        skillsWanted,
+        availability,
+        profileVisibility,
+        level,
+      },
+    },
+    { new: true }
+  ).select("-password");
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(200, updatedUser, "User details updated successfully")
+    );
+});
+
+const deleteUserAccount = asynchandler(async (req, res) => {
+  await User.findByIdAndDelete(req.user._id);
+  res
+    .status(201)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(201, {}, "Deleted user successfully"));
+});
+
+const searchUsers = asynchandler(async (req, res) => {
+  const {
+    skill, // The specific skill the user wants to learn (singular)
+    location, // Optional location filter
+    level, // Optional level filter
+  } = req.query;
+
+  if (!skill) {
+    throw new ApiError(400, "Please provide a skill to search for.");
+  }
+
+  const query = {};
+
+  // 1. Primary search: Find users who OFFER the specified skill
+  // Ensure case-insensitivity by converting the skill to lowercase.
+  query.skillsOffered = { $in: [skill.trim().toLowerCase()] };
+
+  // 2. Apply Location filter (if provided)
+  if (location) {
+    query.location = location;
+  }
+
+  // 3. Apply Level filter (if provided)
+  if (level) {
+    query.level = level;
+  }
+  
+  query.profileVisibility = true;
+
+  const users = await User.find(query).select("-password -refreshToken");
+
+  if (!users || users.length === 0) {
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          { users: [] },
+          "No users found offering this skill with the selected filters."
+        )
+      );
+  }
+
+  res.status(200).json(
+    new ApiResponse(
+      200,
+      { users },
+      "Users found successfully based on your search criteria."
+    )
+  );
+});
+
+export {
+  registerUser,
+  loginUser,
+  logoutUser,
+  deleteUserAccount,
+  updateUserDetails,
+  searchUsers,
+};

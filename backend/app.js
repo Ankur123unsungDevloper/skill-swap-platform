@@ -2,6 +2,8 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
+const app = express();
+
 app.use(cors({
     origin: '*', // Replace with your frontend's actual origin
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
@@ -9,7 +11,6 @@ app.use(cors({
     // optionsSuccessStatus: 200 // Good practice for pre-flight requests
 }));
 
-const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
