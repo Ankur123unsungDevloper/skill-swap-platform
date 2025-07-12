@@ -1,24 +1,30 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 
-// import AppLayout from './AppLayout';
-
-// Import page components
-// import Home from './(homepage)/page';
-// import Login from './login/page';
-// import Dashboard from './dashboard/page';
-// import Browse from './browse/page';
+// Pages
+import Landing from './pages/Landing';
+// import Login from './pages/Login';
+// import Signup from './pages/Signup';
+// import Home from './pages/Home';
+// import Dashboard from './pages/Dashboard';
 
 function App() {
   return (
-    <AppLayout>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/browse" element={<Browse />} />
-      </Routes>
-    </AppLayout>
+    <Routes>
+      {/* Public Landing Page */}
+      <Route path="/" element={<Landing />} />
+
+      {/* Auth Pages */}
+      {/* <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} /> */}
+
+      {/* Protected Pages (for later) */}
+      {/* <Route path="/home" element={<Home />} />
+      <Route path="/dashboard" element={<Dashboard />} /> */}
+
+      {/* Fallback Route */}
+      {/* <Route path="*" element={<Navigate to="/" />} /> */}
+    </Routes>
   );
 }
 
