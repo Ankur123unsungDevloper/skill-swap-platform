@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+/* Set light mode as default */
+:root {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
+  color-scheme: light; /* force light theme */
+}
+
+/* Global Reset */
+body {
+  margin: 0;
+  min-width: 100%;
+  min-height: 100%;
+  @apply bg-white text-gray-800 font-sans antialiased;
+}
+
+
+/* Optional default heading */
+h1 {
+  @apply text-3xl font-bold;
+}
+
+/* Optional button base style */
+button {
+  @apply px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition;
+}
