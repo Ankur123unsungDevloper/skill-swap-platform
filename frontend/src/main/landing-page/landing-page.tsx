@@ -1,10 +1,11 @@
-import React from 'react';
+import Navbar from '../navbar/navbar';
+import Heading from './_components/heading';
 
-const LandingPage: React.FC = () => {
+const LandingPage= () => {
   return (
-    <div style={{ padding: '2rem', textAlign: 'center' }}>
-      <h1>Welcome to the Landing Page</h1>
-      <p>This page is shown when the URL is `/`</p>
+    <div>
+      <Navbar />
+      <Heading />
     </div>
   );
 };
