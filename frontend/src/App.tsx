@@ -1,15 +1,17 @@
-// src/App.tsx
-import React from 'react';
-import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import LandingPage from './main/landing-page/landing-page';
+import DashBoard from './dashboard/dashboard';
+import SignInPage from './routes/sign-in';
+import SignUpPage from './routes/sign-up';
 
-const App: React.FC = () => {
+const App= () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/sign-in/*" element={<SignInPage />} />
+      <Route path="/sign-up/*" element={<SignUpPage />} />
+      <Route path="/dashboard" element={<DashBoard />} />
+    </Routes>
   );
 };
 
