@@ -1,64 +1,40 @@
-import { clerkClient, getAuth } from "@clerk/clerk-sdk-node";
+import jwt from "jsonwebtoken";
 import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
-import jwt from "jsonwebtoken";
 
-// Helper function
-const generateAccessAndRefreshTokens = async (userId) => {
-  const user = await User.findById(userId);
-  const accessToken = user.generateAccessToken();
-  const refreshToken = user.generateRefreshToken();
-  user.refreshToken = refreshToken;
-  await user.save({ validateBeforeSave: false });
-  return { accessToken, refreshToken };
+// Helper function to verify JWT
+const verifyToken = (token) => {
+  try {
+    return jwt.verify(token, process.env.JWT_SECRET);
+  } catch (err) {
+    return null;
+  }
 };
 
 export const requireAuth = async (req, res, next) => {
   try {
-    const { userId } = getAuth(req);
-    if (!userId) throw new ApiError(401, "Unauthorized - Clerk user not found");
+    const token = req.cookies?.accessToken || req.headers.authorization?.split(" ")[1];
 
-    const clerkUser = await clerkClient.users.getUser(userId);
-    if (!clerkUser) throw new ApiError(401, "Clerk user data not found");
-
-    // Check if user already exists in your DB
-    let user = await User.findOne({ email: clerkUser.emailAddresses[0].emailAddress });
-
-    // If not, create a new one
-    if (!user) {
-      user = await User.create({
-        username: clerkUser.username || clerkUser.id,
-        name: `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim(),
-        email: clerkUser.emailAddresses[0].emailAddress,
-        password: process.env.DEFAULT_CLERK_USER_PASSWORD || "clerk_auth", // can be random
-        profileVisibility: true,
-        skillsOffered: [],
-        skillsWanted: [],
-        location: '',
-        level: 'Beginner',
-      });
+    if (!token) {
+      throw new ApiError(401, "No token provided. Unauthorized.");
     }
 
-    // Generate custom JWTs
-    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
+    const decoded = verifyToken(token);
 
-    // Attach user to request
+    if (!decoded || !decoded.userId) {
+      throw new ApiError(401, "Invalid token. Unauthorized.");
+    }
+
+    const user = await User.findById(decoded.userId);
+
+    if (!user) {
+      throw new ApiError(401, "User not found. Unauthorized.");
+    }
+
     req.user = user;
-
-    // Optionally send tokens if you're using this middleware for login
-    res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-    });
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-    });
-
-    // ✅ Continue
     next();
   } catch (error) {
-    console.error("Clerk Auth Error:", error);
-    next(new ApiError(401, error.message || "Clerk authentication failed"));
+    console.error("Auth Middleware Error:", error);
+    next(new ApiError(401, error.message || "Authentication failed"));
   }
 };

@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { verifyJWT } from '../middlewares/auth.middleware.js'; // Your JWT verification middleware
+import { verifyJWT } from '../middleware/auth.middleware.js'; // Your JWT verification middleware
 import {
     submitRating,
     getUserRatings
-} from '../controllers/rating.controller.js'; // Adjust path
+} from '../controller/rating.controller.js'; // Adjust path
 
 const router = Router();
 
