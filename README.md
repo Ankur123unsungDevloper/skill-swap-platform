@@ -37,4 +37,6 @@ Develop a **Skill Swap Platform** — a mini web application that enables users 
 > ✅ **mage-odoo** has been added as a collaborator.
 
 
+<img width="1919" height="1100" alt="Screenshot 2025-07-12 175458" src="https://github.com/user-attachments/assets/657b662f-0238-4163-b2bc-8e2f50a3c0f9" />
+
 <img width="1919" height="1027" alt="Screenshot 2025-07-12 173435" src="https://github.com/user-attachments/assets/2d7ce274-c829-4b7e-b738-9113cdd23218" />
